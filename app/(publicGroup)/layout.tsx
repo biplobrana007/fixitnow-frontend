@@ -1,13 +1,13 @@
 import { Navbar } from "@/components/shared/navbar";
 import React from "react";
 
-const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+const PublicLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div >
+    <div>
       <Navbar></Navbar>
       {children}
     </div>
   );
 };
 
-export default AuthLayout;
+export default PublicLayout;
