@@ -1,64 +1,86 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState } from "react";
+import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';
-import { User, Menu } from 'lucide-react';
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { User, Menu } from "lucide-react";
+import { CurrentUser } from "@/types/userType";
+import { logout } from "@/services/logout";
+import { useRouter } from "next/navigation";
 
 // Navigation links organized in an array
 const navLinks = [
   {
-    label: 'Home',
-    href: '/',
+    label: "Home",
+    href: "/",
   },
   {
-    label: 'About',
-    href: '/about',
+    label: "About",
+    href: "/about",
   },
   {
-    label: 'Services',
-    href: '/services',
+    label: "Services",
+    href: "/services",
   },
   {
-    label: 'Contact',
-    href: '/contact',
+    label: "Contact",
+    href: "/contact",
   },
 ];
 
 // Dropdown menu options
 const dropdownOptions = [
   {
-    label: 'Profile',
-    href: '/profile',
+    label: "Profile",
+    href: "/profile",
+    action: "profile",
+  },
+
+  {
+    label: "Dashboard",
+    href: "/docs",
+    action: "dashboard",
   },
   {
-    label: 'Settings',
-    href: '/settings',
-  },
-  {
-    label: 'Documentation',
-    href: '/docs',
-  },
-  {
-    label: 'Logout',
-    href: '/logout',
+    label: "Logout",
+    href: "/logout",
+    action: "logout",
   },
 ];
 
-export function Navbar() {
+export function Navbar({ currentUser }: { currentUser: CurrentUser }) {
+  const router = useRouter();
+  const handleUserMenuAction = async (action: string) => {
+    if (action === "dashboard") {
+      if (currentUser.role === "CUSTOMER") {
+        router.push("/customer-dashboard");
+      } else if (currentUser.role === "TECHNICIAN") {
+        router.push("/technician-dashboard");
+      } else if (currentUser.role === "ADMIN") {
+        router.push("/admin-dashboard");
+      }
+
+      return;
+    }
+
+    if (action === "logout") {
+      await logout();
+      router.push("/login");
+    }
+  };
   const [open, setOpen] = useState(false);
 
   return (
@@ -67,7 +89,10 @@ export function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="shrink-0">
-            <Link href="/" className="text-2xl font-bold text-foreground hover:opacity-80 transition-opacity">
+            <Link
+              href="/"
+              className="text-2xl font-bold text-foreground hover:opacity-80 transition-opacity"
+            >
               FixItNow
             </Link>
           </div>
@@ -87,53 +112,73 @@ export function Navbar() {
 
           {/* Right side - Desktop */}
           <div className="hidden md:flex items-center shrink-0">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <User className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                {dropdownOptions.map((option, index) => (
-                  <div key={option.href}>
-                    <DropdownMenuItem asChild>
-                      <Link href={option.href} className="cursor-pointer">
-                        {option.label}
-                      </Link>
-                    </DropdownMenuItem>
-                    {index === 2 && <DropdownMenuSeparator />}
-                  </div>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {currentUser?.email ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  {dropdownOptions.map((option, index) => (
+                    <div key={option.href}>
+                      <DropdownMenuItem
+                        onClick={() => handleUserMenuAction(option.action)}
+                        asChild
+                      >
+                        <span className="cursor-pointer">{option.label}</span>
+                      </DropdownMenuItem>
+                      {index === 1 && <DropdownMenuSeparator />}
+                    </div>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link
+                className=" border px-3 py-2 rounded-md text-sm font-medium hover:text-foreground hover:bg-background bg-primary text-accent transition-colors"
+                href="/login"
+              >
+                Login
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu */}
           <div className="md:hidden flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <User className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                {dropdownOptions.map((option, index) => (
-                  <div key={option.href}>
-                    <DropdownMenuItem asChild>
-                      <Link href={option.href} className="cursor-pointer">
-                        {option.label}
-                      </Link>
-                    </DropdownMenuItem>
-                    {index === 2 && <DropdownMenuSeparator />}
-                  </div>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {currentUser?.email ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  {dropdownOptions.map((option, index) => (
+                    <div key={option.href}>
+                      <DropdownMenuItem
+                        onClick={() => handleUserMenuAction(option.action)}
+                        asChild
+                      >
+                        <span className="cursor-pointer">{option.label}</span>
+                      </DropdownMenuItem>
+                      {index === 1 && <DropdownMenuSeparator />}
+                    </div>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link
+                className=" border px-3 py-2 rounded-md text-sm font-medium hover:text-foreground hover:bg-background bg-primary text-accent transition-colors"
+                href="/login"
+              >
+                Login
+              </Link>
+            )}
 
             <Sheet open={open} onOpenChange={setOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-5 w-5" />
+              <SheetTrigger className="" asChild>
+                <Button variant="ghost" size="icon-lg"  className="cursor-pointer">
+                  <Menu className="h-5 w-5 " />
                 </Button>
               </SheetTrigger>
               <SheetContent side="left">
@@ -143,7 +188,7 @@ export function Navbar() {
                     <Link
                       key={link.href}
                       href={link.href}
-                      className="text-lg font-medium text-foreground hover:text-accent transition-colors"
+                      className="text-lg font-medium text-foreground hover:text-blue-800 transition-colors"
                       onClick={() => setOpen(false)}
                     >
                       {link.label}

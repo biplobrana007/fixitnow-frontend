@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,15 +16,8 @@ export function LoginForm() {
     {}
   );
 
-  console.log(state);
-
- 
-
-
   return (
     <form action={action} className="space-y-4">
-    
-
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input
