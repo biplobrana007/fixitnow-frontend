@@ -1,3 +1,4 @@
+import { Footer } from "@/components/shared/footer";
 import { Navbar } from "@/components/shared/navbar";
 import { getMe } from "@/services/getMe";
 import React from "react";
@@ -7,7 +8,10 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <Navbar currentUser={currentUser} ></Navbar>
-      {children}
+         <div className="min-h-screen">
+         {children}
+         </div>
+         <Footer></Footer>
     </div>
   );
 };

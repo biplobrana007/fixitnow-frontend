@@ -20,7 +20,7 @@ export default function MyProfile({ user }: { user: CurrentUser }) {
   const date = new Date(user.createdAt as string);
 
   return (
-    <main className="min-h-screen bg-muted/30 px-3 py-6 sm:px-6 sm:py-10 lg:px-8">
+    <main className="min-h-screen flex items-center justify-center bg-muted/30 px-3 py-6 sm:px-6 sm:py-10 lg:px-8">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 sm:gap-6">
         <header className="flex flex-col gap-2">
           <p className="text-sm font-medium text-muted-foreground">Account</p>
