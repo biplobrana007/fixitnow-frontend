@@ -64,6 +64,8 @@ const dropdownOptions = [
 export function Navbar({ currentUser }: { currentUser: CurrentUser }) {
   const router = useRouter();
   const handleUserMenuAction = async (action: string) => {
+    if (action === "profile") router.push("my-profile");
+
     if (action === "dashboard") {
       if (currentUser.role === "CUSTOMER") {
         router.push("/customer-dashboard");
@@ -177,7 +179,11 @@ export function Navbar({ currentUser }: { currentUser: CurrentUser }) {
 
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger className="" asChild>
-                <Button variant="ghost" size="icon-lg"  className="cursor-pointer">
+                <Button
+                  variant="ghost"
+                  size="icon-lg"
+                  className="cursor-pointer"
+                >
                   <Menu className="h-5 w-5 " />
                 </Button>
               </SheetTrigger>
