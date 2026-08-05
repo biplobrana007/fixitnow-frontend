@@ -11,7 +11,7 @@ export const getMe = async () => {
     };
   }
 
-  const res = await fetch(`https://fixitnow-server.vercel.app/api/auth/me`, {
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/me`, {
     headers: {
       cookie: `accessToken=${accessToken}`,
     },
