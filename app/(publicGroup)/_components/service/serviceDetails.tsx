@@ -35,14 +35,16 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { ServiceDetailsType } from "@/types/serviceType";
+import { createBooking } from "@/services/createBooking";
+import { toast } from "sonner";
 
 type TimeSlot = { value: string; label: string; available: boolean };
 
 const timeSlots: TimeSlot[] = [
-  { value: "09:00", label: "9:00 AM – 11:00 AM", available: true },
-  { value: "11:30", label: "11:30 AM – 1:30 PM", available: true },
-  { value: "14:00", label: "2:00 PM – 4:00 PM", available: false },
-  { value: "16:30", label: "4:30 PM – 6:30 PM", available: true },
+  { value: "09:00", label: "9:00 AM - 11:00 AM", available: true },
+  { value: "11:30", label: "11:30 AM - 1:30 PM", available: true },
+  { value: "14:00", label: "2:00 PM - 4:00 PM", available: false },
+  { value: "16:30", label: "4:30 PM - 6:30 PM", available: true },
 ];
 
 const formatDate = (date: Date | undefined) =>
@@ -60,22 +62,34 @@ export function ServiceDetails({
 }: {
   serviceDetails: ServiceDetailsType;
 }) {
-  const [service, setService] = React.useState(serviceDetails?.service);
-
   const today = React.useMemo(() => {
     const value = new Date();
     value.setHours(0, 0, 0, 0);
     return value;
   }, []);
+  const [service, setService] = React.useState(serviceDetails?.service);
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>();
   const [selectedSlot, setSelectedSlot] = React.useState("");
   const [isConfirmed, setIsConfirmed] = React.useState(false);
+  const [bookingNotes, setBookingNotes] = React.useState("");
 
-  const canBook = Boolean(selectedDate && selectedSlot && service.isAvailable);
+  const canBook = Boolean(selectedDate && selectedSlot && service?.isAvailable);
   const selectedTime = timeSlots.find((slot) => slot.value === selectedSlot);
 
+  const serviceId = service.id;
+
   const handleBooking = async () => {
-    console.log(selectedDate, selectedSlot, service.id, service.technicianId);
+    const result = await createBooking({
+      bookingNotes,
+      selectedDate,
+      selectedSlot,
+      serviceId,
+    });
+    console.log(result);
+
+    if(result){
+        toast.success("The Service Is Booked!")
+    }
   };
 
   return (
@@ -83,7 +97,9 @@ export function ServiceDetails({
       <main className="min-h-screen bg-background text-foreground">
         <div id="top" className="mx-auto max-w-6xl px-4 py-6 lg:px-8 lg:py-10">
           <div className="mb-8 flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="capitalize">{service?.category?.categoryName}</span>
+            <span className="capitalize">
+              {service?.category?.categoryName}
+            </span>
             <span aria-hidden="true">/</span>
             <span className="text-foreground">{service?.title}</span>
           </div>
@@ -135,7 +151,7 @@ export function ServiceDetails({
                     </div>
                     <div className="flex items-center gap-1 text-sm">
                       <Star className="size-4 fill-current text-primary" />{" "}
-                      {serviceDetails?.averageRating.toFixed(1)}
+                      {serviceDetails?.averageRating?.toFixed(1)}
                     </div>
                     <Badge variant="secondary">Verified professional</Badge>
                   </CardContent>
@@ -214,7 +230,8 @@ export function ServiceDetails({
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-semibold">
-                      ${service?.price}
+                      {service?.price}
+                      <span className="text-gray-600 text-sm">TK</span>
                     </div>
                     <div className="text-xs text-muted-foreground">
                       per visit
@@ -263,7 +280,7 @@ export function ServiceDetails({
                         className="flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-3 text-sm transition-colors has-data-checked:border-primary has-data-checked:bg-accent has-disabled:cursor-not-allowed has-disabled:opacity-50"
                       >
                         <RadioGroupItem
-                          value={slot.value}
+                          value={slot.label}
                           disabled={
                             !slot.available ||
                             !selectedDate ||
@@ -279,6 +296,27 @@ export function ServiceDetails({
                       </label>
                     ))}
                   </RadioGroup>
+                </div>
+                <Separator />
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="booking-notes"
+                    className="text-sm font-medium"
+                  >
+                    Add a note for your technician
+                  </label>
+                  <textarea
+                    id="booking-notes"
+                    value={bookingNotes}
+                    className="border p-1"
+                    onChange={(event) => setBookingNotes(event.target.value)}
+                    placeholder="Tell us about the problem, access instructions, or anything else helpful."
+                    maxLength={500}
+                    rows={4}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Optional · {bookingNotes.length}/500 characters
+                  </p>
                 </div>
               </CardContent>
               <CardFooter className="flex-col items-stretch gap-3">
@@ -342,7 +380,10 @@ export function ServiceDetails({
             </div>
             <div className="flex justify-between gap-4">
               <span className="text-muted-foreground">Total</span>
-              <span className="font-semibold">${service?.price}</span>
+              <span className="font-semibold">
+                {service?.price}{" "}
+                <span className="text-gray-600 text-sm">TK</span>
+              </span>
             </div>
           </div>
           <DialogFooter>
