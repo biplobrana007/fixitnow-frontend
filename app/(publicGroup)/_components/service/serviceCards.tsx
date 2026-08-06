@@ -5,7 +5,7 @@ import Container from "@/components/shared/container";
 
 const ServiceCards = ({ services }: { services: ServiceType[] }) => {
   return (
-    <Container className="">
+    <Container className="max-sm:px-1 px-5">
       <div>
         <h2 className="text-center mt-5 font-bold text-2xl text-primary">
           Services

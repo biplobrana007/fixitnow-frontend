@@ -16,7 +16,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { User, Menu } from "lucide-react";
+import { User, Menu, Droplets } from "lucide-react";
 import { CurrentUser } from "@/types/userType";
 import { logout } from "@/services/logout";
 import { useRouter } from "next/navigation";
@@ -64,7 +64,7 @@ const dropdownOptions = [
 export function Navbar({ currentUser }: { currentUser: CurrentUser }) {
   const router = useRouter();
   const handleUserMenuAction = async (action: string) => {
-    if (action === "profile") router.push("my-profile");
+    if (action === "profile") router.push("/my-profile");
 
     if (action === "dashboard") {
       if (currentUser.role === "CUSTOMER") {
@@ -89,8 +89,11 @@ export function Navbar({ currentUser }: { currentUser: CurrentUser }) {
     <nav className="border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="shrink-0">
+    
+          <div className="shrink-0 flex gap-2">
+          <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                <Droplets aria-hidden="true" className="size-4" />
+              </span>
             <Link
               href="/"
               className="text-2xl font-bold text-foreground hover:opacity-80 transition-opacity"

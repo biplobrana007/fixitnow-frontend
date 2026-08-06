@@ -27,3 +27,36 @@ export type ServiceType = {
   };
   averageRating: number;
 };
+
+export type ServiceDetailsType = {
+  service: {
+    id: string;
+    title: string;
+    description: string;
+    price: string;
+    isAvailable: boolean;
+    duration: number;
+    technicianId: string;
+    categoryId: string;
+    createdAt: string;
+    updatedAt: string;
+    technician: {
+      technicianReviews: [
+        {
+          rating: number;
+          comment: string;
+          customer: {
+            name: string;
+            profilePhoto: string;
+          };
+        }
+      ];
+      name: string;
+      email: string;
+    };
+    category: {
+      categoryName: string;
+    };
+  };
+  averageRating: number;
+};

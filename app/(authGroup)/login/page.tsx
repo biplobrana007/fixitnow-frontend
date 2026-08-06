@@ -7,10 +7,12 @@ import {
 } from "@/components/ui/card";
 
 import { LoginForm } from "../_components/loginForm";
+import Container from "@/components/shared/container";
 
 const LoginPage = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
+    <Container className="">
+      <div className=" min-h-screen border flex flex-col items-center justify-center">
       <h2 className="text-3xl font-bold text-primary mb-10">Welcome Back!</h2>
       <Card className="w-full max-w-md">
       <CardHeader>
@@ -24,6 +26,7 @@ const LoginPage = () => {
       </CardContent>
     </Card>
     </div>
+    </Container>
   );
 };
 

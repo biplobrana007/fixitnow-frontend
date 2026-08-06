@@ -10,7 +10,6 @@ const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <Navbar currentUser={currentUser}></Navbar>
-      {children}
       <div className="min-h-screen">{children}</div>
       <Footer></Footer>
     </div>

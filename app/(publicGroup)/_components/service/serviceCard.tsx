@@ -22,6 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ServiceType } from "@/types/serviceType";
+import Link from "next/link";
 
 
 export function ServiceCard({ service }: { service: ServiceType }) {
@@ -98,7 +99,7 @@ export function ServiceCard({ service }: { service: ServiceType }) {
           <CalendarCheck className="size-4 shrink-0" aria-hidden="true" />
           Flexible scheduling available
         </p>
-        <Button className="w-full sm:w-auto">View Details</Button>
+        <Button className="w-full sm:w-auto"><Link href={`/services/${service.id}`}>View Details</Link></Button>
       </CardFooter>
     </Card>
   );
